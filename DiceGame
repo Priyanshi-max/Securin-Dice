@@ -1,0 +1,76 @@
+import java.util.Arrays;
+
+public class DiceGame {
+
+    public static void main(String[] args) {
+        int totalCombinations = 6 * 6;
+        System.out.println("Total Combinations: " + totalCombinations);
+
+        int[] diceFaces = {1, 2, 3, 4, 5, 6};
+        System.out.println("Distribution of Combinations:");
+        displayDiceCombinations(diceFaces);
+
+        calculateAndDisplayProbabilities(totalCombinations);
+
+        int[] dieA = {1, 2, 3, 4, 5, 6};
+        int[] dieB = {1, 2, 3, 4, 5, 6};
+        int[] transformedDieA = transformDice(dieA, dieB);
+
+        System.out.println("\nTransformed Die A: " + Arrays.toString(transformedDieA));
+        System.out.println("Die B: " + Arrays.toString(dieB));
+    }
+
+    static void displayDiceCombinations(int[] diceFaces) {
+        for (int faceA : diceFaces) {
+            for (int faceB : diceFaces) {
+                System.out.print((faceA + faceB) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    static void calculateAndDisplayProbabilities(int totalCombinations) {
+        int[] sumProbabilities = new int[13];
+        Arrays.fill(sumProbabilities, 0);
+
+        for (int valueA = 1; valueA <= 6; valueA++) {
+            for (int valueB = 1; valueB <= 6; valueB++) {
+                sumProbabilities[valueA + valueB]++;
+            }
+        }
+
+        System.out.println("\nProbability of Sums:");
+        for (int sum = 2; sum <= 12; sum++) {
+            System.out.println("P(Sum = " + sum + ") = " + sumProbabilities[sum] + "/" + totalCombinations);
+        }
+    }
+
+    static int[] transformDice(int[] dieA, int[] dieB) {
+        int[] modifiedDieA = Arrays.copyOf(dieA, dieA.length);
+        int excessSpots = calculateExcessSpots(dieA);
+
+        for (int i = 0; i < modifiedDieA.length && excessSpots > 0; i++) {
+            int spotsToReduce = Math.min(4 - dieA[i], excessSpots);
+            modifiedDieA[i] += spotsToReduce;
+            excessSpots -= spotsToReduce;
+        }
+
+        return modifiedDieA;
+    }
+
+    static int calculateExcessSpots(int[] die) {
+        int sum = 0;
+        for (int value : die) {
+            sum += value;
+        }
+        return sum - calculateArraySum(die);
+    }
+
+    static int calculateArraySum(int[] array) {
+        int sum = 0;
+        for (int value : array) {
+            sum += value;
+        }
+        return sum;
+    }
+}
